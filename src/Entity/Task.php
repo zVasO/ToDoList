@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\TaskRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 class Task
@@ -18,9 +20,11 @@ class Task
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Vous devez saisir un titre.")]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Vous devez saisir du contenu.")]
     private ?string $content = null;
 
     #[ORM\Column]

@@ -6,6 +6,8 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -17,9 +19,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Assert\Email(message: "Le format de l'adresse n'est pas correcte.")]
+    #[Assert\NotBlank(message: "Vous devez saisir une adresse email.")]
     private ?string $email = null;
 
     #[ORM\Column(length: 25, unique: true)]
+    #[Assert\NotBlank(message: "Vous devez saisir un nom d'utilisateur")]
     private ?string $username = null;
 
     #[ORM\Column]
