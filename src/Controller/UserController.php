@@ -6,7 +6,7 @@ use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use UserType;
+use App\Form\UserType;
 
 class UserController extends AbstractController
 {
