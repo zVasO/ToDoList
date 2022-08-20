@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Task;
 use App\Form\TaskType;
+use App\Service\FormService\TaskFormService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,7 +15,9 @@ class TaskController extends AbstractController
 {
 
 
-    public function __construct(private readonly TaskService $taskService)
+    public function __construct(private readonly TaskService $taskService,
+                                private readonly TaskFormService $taskFormService
+    )
     {
     }
 
@@ -30,16 +33,17 @@ class TaskController extends AbstractController
     {
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
-
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->taskService->addTask($task);
+
+        if ($this->taskFormService->createTask($form, $task)) {
             $this->addFlash('success', 'La tâche a été bien été ajoutée.');
             return $this->redirectToRoute('task_list');
         }
 
-        return $this->render('task/create.html.twig', ['form' => $form->createView()]);
+        return $this->renderForm('task/create.html.twig', [
+            'form' => $form
+        ]);
     }
 
 
@@ -47,17 +51,15 @@ class TaskController extends AbstractController
     public function editTask(Task $task, Request $request): Response
     {
         $form = $this->createForm(TaskType::class, $task);
-
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->taskService->editTask($task);
+        if($this->taskFormService->editTask($form, $task)) {
             $this->addFlash('success', 'La tâche a bien été modifiée.');
             return $this->redirectToRoute('task_list');
         }
 
-        return $this->render('task/edit.html.twig', [
-            'form' => $form->createView(),
+        return $this->renderForm('task/edit.html.twig', [
+            'form' => $form,
             'task' => $task,
         ]);
     }

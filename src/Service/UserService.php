@@ -23,7 +23,15 @@ class UserService
      */
     public function createUser(User $user): void
     {
+        $this->userRepository->add($user, true);
+    }
 
+    /**
+     * @param User $user
+     * @return void
+     */
+    public function editUser(User $user): void
+    {
         $this->userRepository->add($user, true);
     }
 }
