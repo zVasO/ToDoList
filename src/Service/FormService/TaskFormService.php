@@ -3,6 +3,7 @@
 namespace App\Service\FormService;
 
 use App\Entity\Task;
+use App\Entity\User;
 use App\Service\TaskService;
 use Symfony\Component\Form\FormInterface;
 
@@ -30,12 +31,13 @@ class TaskFormService
     /**
      * @param FormInterface $form
      * @param Task $task
+     * @param User|null $user
      * @return bool
      */
-    public function createTask(FormInterface $form, Task $task): bool
+    public function createTask(FormInterface $form, Task $task, ?User $user): bool
     {
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->taskService->addTask($task);
+            $this->taskService->addTask($task, $user);
             return true;
         }
         return false;
