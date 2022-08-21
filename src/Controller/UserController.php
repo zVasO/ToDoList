@@ -38,7 +38,8 @@ class UserController extends AbstractController
 
         if ($this->userFormService->createUser($form, $user)) {
             $this->addFlash('success', "L'utilisateur a bien été ajouté.");
-            return $this->redirectToRoute('user_list');
+            if (in_array('ROLE_ADMIN', ($user->getRoles()))) return $this->redirectToRoute('user_list');
+            return $this->redirectToRoute('task_list');
         }
 
         return $this->renderForm('user/create.html.twig', [
