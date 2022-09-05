@@ -53,7 +53,8 @@ class TaskController extends AbstractController
         $user = $this->getUser();
 
 
-        if ($this->taskFormService->createTask($form, $task, $user)) {
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->taskFormService->createTask($form, $task, $user);
             $this->addFlash('success', 'La tâche a été bien été ajoutée.');
             return $this->redirectToRoute('task_list');
         }
@@ -70,7 +71,8 @@ class TaskController extends AbstractController
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
 
-        if($this->taskFormService->editTask($form, $task)) {
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->taskFormService->editTask($task);
             $this->addFlash('success', 'La tâche a bien été modifiée.');
             return $this->redirectToRoute('task_list');
         }

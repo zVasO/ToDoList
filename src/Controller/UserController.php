@@ -36,7 +36,8 @@ class UserController extends AbstractController
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
-        if ($this->userFormService->createUser($form, $user)) {
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->userFormService->createUser($user);
             $this->addFlash('success', "L'utilisateur a bien été ajouté.");
             if (in_array('ROLE_ADMIN', ($user->getRoles()))) return $this->redirectToRoute('user_list');
             return $this->redirectToRoute('task_list');
@@ -53,10 +54,12 @@ class UserController extends AbstractController
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
-        if ($this->userFormService->editUser($form, $user)) {
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->userFormService->editUser($user);
             $this->addFlash('success', "L'utilisateur a bien été modifié");
             return $this->redirectToRoute('user_list');
         }
+
 
         return $this->renderForm('user/edit.html.twig', [
             'form' => $form,
