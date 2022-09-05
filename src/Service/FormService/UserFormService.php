@@ -43,6 +43,7 @@ class UserFormService
      */
     public function editUser(FormInterface $form, User $user): bool
     {
+        //TODO: retirer form valid and submit
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setPassword(
                 $this->userPasswordHasher->hashPassword(

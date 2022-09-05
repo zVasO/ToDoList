@@ -12,7 +12,7 @@ class UserService
     {
     }
 
-    public function getAllUsers()
+    public function getAllUsers(): array
     {
         return $this->userRepository->findAll();
     }
