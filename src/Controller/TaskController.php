@@ -29,6 +29,20 @@ class TaskController extends AbstractController
         return $this->render('task/list.html.twig', ['tasks' => $tasks]);
     }
 
+    #[Route('/tasks/todo', name: 'task_list_todo')]
+    public function listTasksTodo(): Response
+    {
+        $tasks = $this->taskService->getAllTasksTodo();
+        return $this->render('task/list.html.twig', ['tasks' => $tasks, 'status'=>'todo']);
+    }
+
+    #[Route('/tasks/done', name: 'task_list_done')]
+    public function listTasksDone(): Response
+    {
+        $tasks = $this->taskService->getAllTasksDone();
+        return $this->render('task/list.html.twig', ['tasks' => $tasks, 'status'=>'done']);
+    }
+
     #[Route('/tasks/create', name: 'task_create')]
     public function createTask(Request $request): Response
     {

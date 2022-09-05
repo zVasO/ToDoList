@@ -4,7 +4,9 @@ namespace App\Voter;
 
 use App\Entity\Task;
 use App\Entity\User;
+use App\Exception\AccessException;
 use LogicException;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -62,6 +64,7 @@ class TaskVoter extends Voter
      * @param Task $task
      * @param User $user
      * @return bool
+     * @throws AccessException
      */
     private function canDelete(Task $task, User $user): bool
     {
@@ -70,7 +73,7 @@ class TaskVoter extends Voter
         } elseif ($task->getUser()->getId() === 0 && in_array('ROLE_ADMIN', $user->getRoles())) {
             return true;
         }
-        return false;
+        throw new AccessException("Vous ne pouvez pas accéder a cette page !", Response::HTTP_UNAUTHORIZED);
     }
 
 }

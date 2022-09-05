@@ -66,4 +66,21 @@ class TaskService
     {
         $this->taskRepository->add($task, true);
     }
+
+
+    /**
+     * @return array
+     */
+    public function getAllTasksTodo(): array
+    {
+        return $this->taskRepository->findBy(["isDone" => 0]);
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllTasksDone(): array
+    {
+        return $this->taskRepository->findBy(["isDone" => 1]);
+    }
 }
