@@ -32,7 +32,7 @@
             </div>
         </div>
         {% else %}
-            {% if status is not null and status is defined %}
+            {% if status is defined  and status is not null %}
                 {% if status == 'done' %}
                     <div class="alert alert-warning" role="alert">
                         Il n'y a pas tâche fini. <a href="{{ path('task_create') }}" class="btn btn-warning pull-right">Créer une tâche</a>
