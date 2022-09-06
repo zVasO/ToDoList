@@ -15,31 +15,21 @@ class TaskFormService
     }
 
     /**
-     * @param FormInterface $form
      * @param Task $task
-     * @return bool
+     * @return void
      */
-    public function editTask(FormInterface $form, Task $task): bool
+    public function editTask(Task $task): void
     {
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->taskService->editTask($task);
-            return true;
-        }
-        return false;
+        $this->taskService->editTask($task);
     }
 
     /**
-     * @param FormInterface $form
      * @param Task $task
      * @param User|null $user
-     * @return bool
+     * @return void
      */
-    public function createTask(FormInterface $form, Task $task, ?User $user): bool
+    public function createTask(Task $task, ?User $user): void
     {
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->taskService->addTask($task, $user);
-            return true;
-        }
-        return false;
+        $this->taskService->addTask($task, $user);
     }
 }

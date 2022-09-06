@@ -23,9 +23,12 @@ class TaskService
     /**
      * @return array
      */
-    public function getAllTasks(): array
+    public function getAllTasks(User $user): array
     {
-        return $this->taskRepository->findAll();
+        if (in_array("ROLE_ADMIN", $user->getRoles())) {
+            return $this->taskRepository->findBy(["User" => [$user, null, 0]]);
+        }
+        return $this->taskRepository->findBy(["User" => $user]);
     }
 
     /**
@@ -69,18 +72,26 @@ class TaskService
 
 
     /**
+     * @param User $user
      * @return array
      */
-    public function getAllTasksTodo(): array
+    public function getAllTasksTodo(User $user): array
     {
-        return $this->taskRepository->findBy(["isDone" => 0]);
+        if (in_array("ROLE_ADMIN", $user->getRoles())) {
+            return $this->taskRepository->findBy(["User" => [$user, null, 0], "isDone" => 0]);
+        }
+        return $this->taskRepository->findBy(["User" => $user, "isDone" => 0]);
     }
 
     /**
+     * @param User $user
      * @return array
      */
-    public function getAllTasksDone(): array
+    public function getAllTasksDone(User $user): array
     {
-        return $this->taskRepository->findBy(["isDone" => 1]);
+        if (in_array("ROLE_ADMIN", $user->getRoles())) {
+            return $this->taskRepository->findBy(["User" => [$user, null, 0], "isDone" => 1]);
+        }
+        return $this->taskRepository->findBy(["User" => $user, "isDone" => 1]);
     }
 }

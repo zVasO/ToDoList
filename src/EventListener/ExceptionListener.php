@@ -28,7 +28,6 @@ class ExceptionListener
         $session = $event->getRequest()->getSession();
         // You get the exception object from the received event
         $exception = $event->getThrowable();
-        dd($exception);
 
         if ($exception instanceof AccessException) {
             $session->getFlashBag()->add('error', $exception->getMessage());
