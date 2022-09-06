@@ -36,6 +36,7 @@ security:
     access_control:
         - { path: ^/users/create, roles: PUBLIC_ACCESS }
         - { path: ^/users, roles: ROLE_ADMIN }
+        - { path: ^/tasks, roles: ROLE_USER }
 
 when@test:
     security:

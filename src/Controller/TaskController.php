@@ -25,21 +25,27 @@ class TaskController extends AbstractController
     #[Route('/tasks', name: 'task_list')]
     public function listTasks(): Response
     {
-        $tasks = $this->taskService->getAllTasks();
+        /** @var User $user */
+        $user = $this->getUser();
+        $tasks = $this->taskService->getAllTasks($user);
         return $this->render('task/list.html.twig', ['tasks' => $tasks]);
     }
 
     #[Route('/tasks/todo', name: 'task_list_todo')]
     public function listTasksTodo(): Response
     {
-        $tasks = $this->taskService->getAllTasksTodo();
+        /** @var User $user */
+        $user = $this->getUser();
+        $tasks = $this->taskService->getAllTasksTodo($user);
         return $this->render('task/list.html.twig', ['tasks' => $tasks, 'status'=>'todo']);
     }
 
     #[Route('/tasks/done', name: 'task_list_done')]
     public function listTasksDone(): Response
     {
-        $tasks = $this->taskService->getAllTasksDone();
+        /** @var User $user */
+        $user = $this->getUser();
+        $tasks = $this->taskService->getAllTasksDone($user);
         return $this->render('task/list.html.twig', ['tasks' => $tasks, 'status'=>'done']);
     }
 
@@ -68,6 +74,8 @@ class TaskController extends AbstractController
     #[Route('/tasks/{id}/edit', name: "task_edit")]
     public function editTask(Task $task, Request $request): Response
     {
+        $this->denyAccessUnlessGranted('MANAGE_TASK', $task);
+
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
 
@@ -86,6 +94,8 @@ class TaskController extends AbstractController
     #[Route('/tasks/{id}/toggle', name: "task_toggle")]
     public function toggleTaskAction(Task $task): Response
     {
+        $this->denyAccessUnlessGranted('MANAGE_TASK', $task);
+
         $this->taskService->toggleTask($task);
         $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
         return $this->redirectToRoute('task_list');
@@ -95,7 +105,7 @@ class TaskController extends AbstractController
     #[Route('/tasks/{id}/delete', name: "task_delete")]
     public function deleteTaskAction(Task $task): Response
     {
-        $this->denyAccessUnlessGranted('DELETE_TASK', $task);
+        $this->denyAccessUnlessGranted('MANAGE_TASK', $task);
         $this->taskService->removeTask($task);
         $this->addFlash('success', 'La tâche a bien été supprimée.');
         return $this->redirectToRoute('task_list');

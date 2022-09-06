@@ -45,7 +45,7 @@
 
     <!-- Page Content -->
     <div class="container">
-        <div class="d-flex flex-row-reverse justify-content-between gap-3 mt-1 mb-1">
+        <div class="d-flex flex-row-reverse gap-3 mt-1 mb-1">
             {% if not app.user and 'login' != app.request.attributes.get('_route') %}
                 <a href="{{ path('user_create') }}" class="btn btn-primary">Créer un utilisateur</a>
             {% endif %}

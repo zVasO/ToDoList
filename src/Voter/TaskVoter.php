@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class TaskVoter extends Voter
 {
-    const DELETE_TASK = 'DELETE_TASK';
+    const MANAGE_TASK = 'MANAGE_TASK';
 
     /**
      * @param string $attribute
@@ -22,7 +22,7 @@ class TaskVoter extends Voter
     protected function supports(string $attribute, mixed $subject): bool
     {
         // if the attribute isn't one we support, return false
-        if ($attribute != self::DELETE_TASK) {
+        if ($attribute != self::MANAGE_TASK) {
             return false;
         }
 
@@ -39,6 +39,7 @@ class TaskVoter extends Voter
      * @param mixed $subject
      * @param TokenInterface $token
      * @return bool
+     * @throws AccessException
      */
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
@@ -53,8 +54,8 @@ class TaskVoter extends Voter
         /** @var Task $task */
         $task = $subject;
 
-        if ($attribute == self::DELETE_TASK) {
-            return $this->canDelete($task, $user);
+        if ($attribute == self::MANAGE_TASK) {
+            return $this->canManage($task, $user);
         }
 
         throw new LogicException('This code should not be reached!');
@@ -66,7 +67,7 @@ class TaskVoter extends Voter
      * @return bool
      * @throws AccessException
      */
-    private function canDelete(Task $task, User $user): bool
+    private function canManage(Task $task, User $user): bool
     {
         if ($task->getUser()->getId() === $user->getId()) {
             return true;
