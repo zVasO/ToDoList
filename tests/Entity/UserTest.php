@@ -2,6 +2,7 @@
 
 namespace App\Tests\Entity;
 
+use App\Entity\Task;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -30,16 +31,16 @@ class UserTest extends KernelTestCase
      */
     public function testGetEmail(): void
     {
-            //GIVEN
-            $expectedEmail = "ilovetest@todolist.fr";
-            $user = (new User())->setEmail($expectedEmail);
+        //GIVEN
+        $expectedEmail = "ilovetest@todolist.fr";
+        $user = (new User())->setEmail($expectedEmail);
 
-            //WHEN
-            $email = $user->getEmail();
+        //WHEN
+        $email = $user->getEmail();
 
-            //THEN
-            $this->assertEquals($expectedEmail, $email);
-        }
+        //THEN
+        $this->assertEquals($expectedEmail, $email);
+    }
 
     /**
      * @return void
@@ -64,16 +65,12 @@ class UserTest extends KernelTestCase
     {
         //GIVEN
         $expectedUserIdentifier = "ilovetest@todolist.fr";
-        $user = (new User())->setUsername($expectedUserIdentifier);
+        $this->user->setEmail($expectedUserIdentifier);
+        $this->entityManager->getRepository(User::class)->add($this->user);
 
-        /**
-        $userRepository = $this->entityManager
-            ->getRepository(User::class);
-        $userRepository->add($user, true);
-        */
 
         //WHEN
-        $userIdentifier = $user->getUserIdentifier();
+        $userIdentifier = $this->user->getUserIdentifier();
 
         //THEN
         $this->assertEquals($expectedUserIdentifier, $userIdentifier);
@@ -91,5 +88,71 @@ class UserTest extends KernelTestCase
         //THEN
         $this->assertEquals($expectedRoles, $roles);
 
+    }
+
+    public function testGetPassword()
+    {
+        $user = $this->user;
+        $expectedPassword = "testgetpassword";
+        $user->setPassword($expectedPassword);
+
+        $password = $user->getPassword();
+
+        $this->assertEquals($expectedPassword, $password);
+    }
+
+    public function testGetTasks()
+    {
+        $user = $this->user;
+        $task = (new Task())->setUser($user)
+            ->setTitle("A simple test")
+            ->setContent("What a test");
+        $user->addTask($task);
+
+        $tasks = $user->getTasks();
+
+        $this->assertEquals($task, actual: $tasks[0]);
+    }
+
+    public function testRemoveTask()
+    {
+        $user = $this->user;
+        $task = (new Task())->setTitle("A simple title")
+            ->setContent("What a content ")
+            ->setUser($user);
+        $user->removeTask($task);
+
+        $emptyTask = $user->getTasks();
+
+        $this->assertEmpty($emptyTask);
+    }
+
+    public function testRemoveTaskWithoutUser()
+    {
+        //TODO check avec Antoine le rapport
+        $user = $this->user;
+        $task = (new Task())->setTitle("A simple title")
+            ->setContent("What a content ");
+        $user->removeTask($task);
+
+        $emptyTask = $user->getTasks();
+
+        $this->assertEmpty($emptyTask);
+    }
+
+
+    protected function setUp(): void
+    {
+        $kernel = self::bootKernel();
+
+        $this->entityManager = $kernel->getContainer()
+            ->get('doctrine')
+            ->getManager();
+
+        $this->user = new User();
+        $this->user->setEmail("test@gmail.com")
+            ->setUsername("fullUserTest")
+            ->setPassword("motdepasse")
+            ->setRoles(["ROLE_USER"]);
     }
 }
