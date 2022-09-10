@@ -19,5 +19,3 @@
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
 
-.idea
-/public/test-coverage/

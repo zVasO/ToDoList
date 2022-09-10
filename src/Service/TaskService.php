@@ -8,19 +8,18 @@ use App\Entity\User;
 use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use Monolog\DateTimeImmutable;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class TaskService
 {
 
     public function __construct(private readonly TaskRepository $taskRepository,
-                                private readonly TokenStorageInterface $tokenStorage,
                                 private readonly UserRepository $userRepository
     )
     {
     }
 
     /**
+     * @param User $user
      * @return array
      */
     public function getAllTasks(User $user): array
