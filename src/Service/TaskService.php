@@ -26,7 +26,7 @@ class TaskService
     public function getAllTasks(User $user): array
     {
         if (in_array("ROLE_ADMIN", $user->getRoles())) {
-            return $this->taskRepository->findBy(["User" => [$user, null, 0]]);
+            return $this->taskRepository->findBy(["User" => [$user, null, self::getAnonymousUser()]]);
         }
         return $this->taskRepository->findBy(["User" => $user]);
     }
@@ -55,7 +55,7 @@ class TaskService
     {
         if (null === $user) {
             //we get the anonymous user
-            $user = $this->userRepository->find(0);
+            $user = $this->userRepository->findOneBy(["email"=> UserService::ANONYME_USER_EMAIL ]);
         }
         $task->setUser($user);
         $this->taskRepository->add($task, true);
@@ -78,7 +78,7 @@ class TaskService
     public function getAllTasksTodo(User $user): array
     {
         if (in_array("ROLE_ADMIN", $user->getRoles())) {
-            return $this->taskRepository->findBy(["User" => [$user, null, 0], "isDone" => 0]);
+            return $this->taskRepository->findBy(["User" => [$user, null, self::getAnonymousUser()], "isDone" => 0]);
         }
         return $this->taskRepository->findBy(["User" => $user, "isDone" => 0]);
     }
@@ -90,8 +90,13 @@ class TaskService
     public function getAllTasksDone(User $user): array
     {
         if (in_array("ROLE_ADMIN", $user->getRoles())) {
-            return $this->taskRepository->findBy(["User" => [$user, null, 0], "isDone" => 1]);
+            return $this->taskRepository->findBy(["User" => [$user, null, self::getAnonymousUser()], "isDone" => 1]);
         }
         return $this->taskRepository->findBy(["User" => $user, "isDone" => 1]);
+    }
+
+    private function getAnonymousUser()
+    {
+        return $this->userRepository->findOneBy(["email" => UserService::ANONYME_USER_EMAIL]);
     }
 }

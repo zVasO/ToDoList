@@ -29,6 +29,7 @@ class ExceptionListener
         // You get the exception object from the received event
         $exception = $event->getThrowable();
 
+        dd($exception);
         if ($exception instanceof AccessException) {
             $session->getFlashBag()->add('error', $exception->getMessage());
             $event->setResponse(new RedirectResponse($this->router->generate('homepage')));

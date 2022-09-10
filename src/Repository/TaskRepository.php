@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Task;
+use App\Entity\User;
+use App\Service\UserService;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -37,6 +39,14 @@ class TaskRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+
+
+    public function getAdminUser()
+    {
+        $userRepo = $this->getEntityManager()->getRepository(User::class);
+        return $userRepo->findOneBy(["email" => UserService::ANONYME_USER_EMAIL]);
     }
 
 //    /**
