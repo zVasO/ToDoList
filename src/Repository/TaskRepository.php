@@ -43,7 +43,7 @@ class TaskRepository extends ServiceEntityRepository
 
 
 
-    public function getAdminUser()
+    public function getAnonymeUser()
     {
         $userRepo = $this->getEntityManager()->getRepository(User::class);
         return $userRepo->findOneBy(["email" => UserService::ANONYME_USER_EMAIL]);
