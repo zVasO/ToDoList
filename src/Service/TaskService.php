@@ -72,7 +72,7 @@ class TaskService
 
     /**
      * @param User $user
-     * @return array
+     * @return Task[]
      */
     public function getAllTasksTodo(User $user): array
     {
@@ -94,7 +94,10 @@ class TaskService
         return $this->taskRepository->findBy(["User" => $user, "isDone" => 1]);
     }
 
-    private function getAnonymousUser()
+    /**
+     * @return User|null
+     */
+    private function getAnonymousUser(): ?User
     {
         return $this->userRepository->findOneBy(["email" => UserService::ANONYME_USER_EMAIL]);
     }
