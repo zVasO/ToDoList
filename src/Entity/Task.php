@@ -30,7 +30,7 @@ class Task
     #[ORM\Column]
     private ?bool $isDone = null;
 
-    #[ORM\ManyToOne(inversedBy: 'tasks')]
+    #[ORM\ManyToOne(cascade: ["persist"], inversedBy: 'tasks')]
     private ?User $User = null;
 
     public function getId(): ?int

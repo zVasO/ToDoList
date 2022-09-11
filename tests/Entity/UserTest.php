@@ -130,9 +130,12 @@ class UserTest extends KernelTestCase
     public function testRemoveTaskWithoutUser()
     {
         //TODO check avec Antoine le rapport
-        $user = $this->user;
-        $task = (new Task())->setTitle("A simple title")
-            ->setContent("What a content ");
+        $user = new User();
+        $uniqueTitle = "A simple title";
+        $task = (new Task())->setTitle($uniqueTitle)
+            ->setContent("What a content ")
+            ->setUser(null);
+
         $user->removeTask($task);
 
         $emptyTask = $user->getTasks();
