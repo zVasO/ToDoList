@@ -72,7 +72,7 @@ class TaskVoter extends Voter
     {
         if ($task->getUser()->getId() === $user->getId()) {
             return true;
-        } elseif (($task->getUser()->getId() === null || $task->getUser()->getEmail() === UserService::ANONYME_USER_EMAIL) && in_array('ROLE_ADMIN', $user->getRoles())) {
+        } elseif (($task->getUser()->getId() === 0 || $task->getUser()->getEmail() === UserService::ANONYME_USER_EMAIL) && in_array('ROLE_ADMIN', $user->getRoles())) {
             return true;
         }
         throw new AccessException("Vous ne pouvez pas accéder a cette page !", Response::HTTP_UNAUTHORIZED);

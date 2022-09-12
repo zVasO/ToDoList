@@ -15,7 +15,6 @@ class SecurityControllerTest extends WebTestCase
     {
         $this->client = static::createClient();
         $this->urlGenerator = $this->client->getContainer()->get('router.default');
-
     }
 
     public function testDisplayLogin()
@@ -23,7 +22,7 @@ class SecurityControllerTest extends WebTestCase
         $crawler = $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('login'));
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
         $this->assertSelectorTextContains('h1', 'Se connecter');
-        $this->assertSelectorNotExists('.alert .alert-danger');
+        $this->assertSelectorNotExists('.alert.alert-danger');
     }
 
     public function testLoginWithBadCredentials()
@@ -37,7 +36,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertResponseRedirects('');
         $crawler = $this->client->followRedirect();
 
-       $this->assertTrue($crawler->filter('.alert.alert-danger')->count() == 1);
+        $this->assertTrue($crawler->filter('.alert.alert-danger')->count() == 1);
     }
 
     public function testLoginWithGoodCredentials()
