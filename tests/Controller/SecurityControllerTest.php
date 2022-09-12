@@ -54,6 +54,15 @@ class SecurityControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h1', "Bienvenue sur Todo List, l'application vous permettant de gérer l'ensemble de vos tâches sans effort !");
     }
 
+    public function testLoginWhenAlreadyLoggedIn()
+    {
+        $user = static::getContainer()->get('doctrine')->getManager()->getRepository(User::class)->findOneByUsername("Admin");
+        $this->client->loginUser($user);
+        $crawler = $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('login'));
+
+        $this->assertSelectorTextContains('h1', "Bienvenue sur Todo List, l'application vous permettant de gérer l'ensemble de vos tâches sans effort !");
+    }
+
     public function testLogout()
     {
         $crawler = $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('logout'));
