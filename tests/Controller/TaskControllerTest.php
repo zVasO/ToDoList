@@ -54,12 +54,7 @@ class TaskControllerTest extends WebTestCase
         }
     }
 
-    /**
-     * public function testEditTask()
-     * {
-     *
-     * }
-     */
+
     private function getUserWithTask()
     {
         $userRepository = $this->em->getRepository(User::class);
@@ -149,6 +144,29 @@ class TaskControllerTest extends WebTestCase
         $crawler = $this->client->followRedirect();
 
         $this->assertTrue($crawler->filter('.alert.alert-success')->count() == 1);
+    }
+
+    public function testEditTask()
+    {
+        $taskRepository = $this->em->getRepository(Task::class);
+        $task = $taskRepository->findOneByTitle("Im the creation");
+        $expectedContent = "Im a random test : ".rand(0,10000);
+        $user = $task->getUser();
+        $this->client->loginUser($user);
+
+        $crawler = $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_edit', ['id' => $task->getId()]));
+        $form = $crawler->selectButton("Modifier")->form([
+            "task[title]" => $task->getTitle(),
+            "task[content]" => $expectedContent
+        ]);
+        $this->client->submit($form);
+        $this->assertResponseRedirects('');
+        $crawler = $this->client->followRedirect();
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertTrue($crawler->filter('.alert.alert-success')->count() == 1);
+        $this->assertTrue($crawler->filter('#content-'. $task->getId())->count() == 1);
+
     }
 
     public function testDeleteTaskAction()

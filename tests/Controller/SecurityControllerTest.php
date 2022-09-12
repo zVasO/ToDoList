@@ -3,6 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Controller\SecurityController;
+use App\Entity\User;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,6 +29,7 @@ class SecurityControllerTest extends WebTestCase
     public function testLoginWithBadCredentials()
     {
         $crawler = $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('login'));
+        $this->client->loginUser(new User());
         $form = $crawler->selectButton("Se connecter")->form([
             "_username" => "ImWrongOne",
             "_password" => "notaPassword"
