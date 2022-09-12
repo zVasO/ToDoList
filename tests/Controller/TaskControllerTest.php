@@ -43,16 +43,36 @@ class TaskControllerTest extends WebTestCase
         $this->client->loginUser($user);
         $task = $user->getTasks()[0];
 
-        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_toggle', ['id'=> $task->getId()]));
+        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_toggle', ['id' => $task->getId()]));
         $crawler = $this->client->followRedirect();
 
         $this->assertTrue($crawler->filter('.alert.alert-success')->count() == 1);
         if ($task->isIsDone()) {
-           $this->assertTrue($crawler->filter("#toggle-".$task->getId())->text() == "Marquer non terminée");
+            $this->assertTrue($crawler->filter("#toggle-" . $task->getId())->text() == "Marquer non terminée");
         } else {
-            $this->assertTrue($crawler->filter("#toggle-".$task->getId())->text() == "Marquer comme faite");
+            $this->assertTrue($crawler->filter("#toggle-" . $task->getId())->text() == "Marquer comme faite");
         }
     }
+
+    /**
+     * public function testEditTask()
+     * {
+     *
+     * }
+     */
+    private function getUserWithTask()
+    {
+        $userRepository = $this->em->getRepository(User::class);
+        $users = $userRepository->findAll();
+
+        foreach ($users as $user) {
+            if (!$user->getTasks()->isEmpty()) {
+                return $user;
+            }
+        }
+        throw new \Exception("All user dont have task");
+    }
+
     public function testListTasksTodo()
     {
         //we connect with a user
@@ -62,7 +82,7 @@ class TaskControllerTest extends WebTestCase
 
         $crawler = $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_list_todo'));
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        $taskToDo = $testUser->getTasks()->filter(function(Task $task) {
+        $taskToDo = $testUser->getTasks()->filter(function (Task $task) {
             return $task->isIsDone() == false;
         });
 
@@ -83,7 +103,7 @@ class TaskControllerTest extends WebTestCase
 
         $crawler = $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_list_done'));
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        $taskDone = $testUser->getTasks()->filter(function(Task $task) {
+        $taskDone = $testUser->getTasks()->filter(function (Task $task) {
             return $task->isIsDone() == true;
         });
 
@@ -130,27 +150,19 @@ class TaskControllerTest extends WebTestCase
 
         $this->assertTrue($crawler->filter('.alert.alert-success')->count() == 1);
     }
-    /**
+
     public function testDeleteTaskAction()
     {
+        $taskRepository = $this->em->getRepository(Task::class);
+        $task = $taskRepository->findOneByTitle("Im the creation");
+        $user = $task->getUser();
+        $this->client->loginUser($user);
+        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_delete', ['id' => $task->getId()]));
+        $crawler = $this->client->followRedirect();
 
-    }
+        //we make sure alert is there
+        $this->assertTrue($crawler->filter('.alert.alert-success')->count() == 1);
+        $this->assertTrue($crawler->filter("#toggle-" . $task->getId())->count() == 0);
 
-    public function testEditTask()
-    {
-
-    }
- */
-    private function getUserWithTask()
-    {
-        $userRepository = $this->em->getRepository(User::class);
-        $users = $userRepository->findAll();
-
-        foreach ($users as $user) {
-            if (!$user->getTasks()->isEmpty()) {
-                return $user;
-            }
-        }
-        throw new \Exception("All user dont have task");
     }
 }

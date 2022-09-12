@@ -27,7 +27,7 @@ class TaskVoter extends Voter
             return false;
         }
 
-        // only vote on `Post` objects
+        // only vote on `Task` objects
         if (!$subject instanceof Task) {
             return false;
         }
@@ -55,11 +55,7 @@ class TaskVoter extends Voter
         /** @var Task $task */
         $task = $subject;
 
-        if ($attribute == self::MANAGE_TASK) {
-            return $this->canManage($task, $user);
-        }
-
-        throw new LogicException('This code should not be reached!');
+        return $this->canManage($task, $user);
     }
 
     /**

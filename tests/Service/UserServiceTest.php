@@ -59,7 +59,5 @@ class UserServiceTest extends KernelTestCase
 
         $this->assertEquals($userToEdit, $this->userRepository->find($userToEdit->getId()));
 
-
-
     }
 }

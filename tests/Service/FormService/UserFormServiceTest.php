@@ -65,8 +65,8 @@ class UserFormServiceTest extends KernelTestCase
             ->disallowMockingUnknownTypes()
             ->getMock();
 
-        // Configurer le bouchon.
+        // Configurer le bouchon (retourn motdepasse en hash)
         $this->userPasswordHasherStub->method('hashPassword')
-            ->willReturn('HashedPassword');
+            ->willReturn('$2y$13$oF//BbcOTbTzd4RIOkIuVut6Qlomr297Wzd6j6uHUWFAvxURGbUM.');
     }
 }

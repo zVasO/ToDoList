@@ -179,6 +179,5 @@ class TaskServiceTest extends KernelTestCase
 
         $this->userRepository = $this->entityManager->getRepository(User::class);
         $this->taskRepository = $this->entityManager->getRepository(Task::class);
-
     }
 }
