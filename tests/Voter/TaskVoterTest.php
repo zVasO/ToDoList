@@ -115,5 +115,4 @@ class TaskVoterTest extends TestCase
                 }
         }
     }
-
 }
