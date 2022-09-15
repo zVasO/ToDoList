@@ -169,6 +169,20 @@ class TaskControllerTest extends WebTestCase
 
     }
 
+    public function testEditAnonymousTaskWithNormalUser()
+    {
+        $taskRepository = $this->em->getRepository(Task::class);
+        $task = $taskRepository->findOneByTitle("Une tache sans utilisateur, null quoi :(");
+        $user = $this->em->getRepository(User::class)->getAllNormalUser()[0];
+        $this->client->loginUser($user);
+
+        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_edit', ['id' => $task->getId()]));
+        $crawler = $this->client->followRedirect();
+
+        $this->assertTrue($crawler->filter('.alert.alert-danger')->count() == 1);
+        $this->assertTrue($crawler->filter('.alert.alert-danger')->text() == "Oops ! Vous ne pouvez pas accéder a cette page !");
+    }
+
     public function testDeleteTaskAction()
     {
         $taskRepository = $this->em->getRepository(Task::class);
