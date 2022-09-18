@@ -5,6 +5,7 @@ namespace App\Voter;
 use App\Entity\Task;
 use App\Entity\User;
 use App\Exception\AccessException;
+use App\Service\UserService;
 use LogicException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -26,7 +27,7 @@ class TaskVoter extends Voter
             return false;
         }
 
-        // only vote on `Post` objects
+        // only vote on `Task` objects
         if (!$subject instanceof Task) {
             return false;
         }
@@ -54,11 +55,7 @@ class TaskVoter extends Voter
         /** @var Task $task */
         $task = $subject;
 
-        if ($attribute == self::MANAGE_TASK) {
-            return $this->canManage($task, $user);
-        }
-
-        throw new LogicException('This code should not be reached!');
+        return $this->canManage($task, $user);
     }
 
     /**
@@ -71,7 +68,7 @@ class TaskVoter extends Voter
     {
         if ($task->getUser()->getId() === $user->getId()) {
             return true;
-        } elseif ($task->getUser()->getId() === 0 && in_array('ROLE_ADMIN', $user->getRoles())) {
+        } elseif (($task->getUser()->getId() === 0 || $task->getUser()->getEmail() === UserService::ANONYME_USER_EMAIL) && in_array('ROLE_ADMIN', $user->getRoles())) {
             return true;
         }
         throw new AccessException("Vous ne pouvez pas accéder a cette page !", Response::HTTP_UNAUTHORIZED);

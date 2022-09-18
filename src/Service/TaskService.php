@@ -8,25 +8,24 @@ use App\Entity\User;
 use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use Monolog\DateTimeImmutable;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class TaskService
 {
 
     public function __construct(private readonly TaskRepository $taskRepository,
-                                private readonly TokenStorageInterface $tokenStorage,
                                 private readonly UserRepository $userRepository
     )
     {
     }
 
     /**
+     * @param User $user
      * @return array
      */
     public function getAllTasks(User $user): array
     {
         if (in_array("ROLE_ADMIN", $user->getRoles())) {
-            return $this->taskRepository->findBy(["User" => [$user, null, 0]]);
+            return $this->taskRepository->findBy(["User" => [$user, null, self::getAnonymousUser()]]);
         }
         return $this->taskRepository->findBy(["User" => $user]);
     }
@@ -41,7 +40,11 @@ class TaskService
         $this->taskRepository->add($task, true);
     }
 
-    public function removeTask(Task $task)
+    /**
+     * @param Task $task
+     * @return void
+     */
+    public function removeTask(Task $task): void
     {
         $this->taskRepository->remove($task, true);
     }
@@ -55,7 +58,7 @@ class TaskService
     {
         if (null === $user) {
             //we get the anonymous user
-            $user = $this->userRepository->find(0);
+            $user = $this->userRepository->findOneBy(["email"=> UserService::ANONYME_USER_EMAIL ]);
         }
         $task->setUser($user);
         $this->taskRepository->add($task, true);
@@ -73,12 +76,12 @@ class TaskService
 
     /**
      * @param User $user
-     * @return array
+     * @return Task[]
      */
     public function getAllTasksTodo(User $user): array
     {
         if (in_array("ROLE_ADMIN", $user->getRoles())) {
-            return $this->taskRepository->findBy(["User" => [$user, null, 0], "isDone" => 0]);
+            return $this->taskRepository->findBy(["User" => [$user, null, self::getAnonymousUser()], "isDone" => 0]);
         }
         return $this->taskRepository->findBy(["User" => $user, "isDone" => 0]);
     }
@@ -90,8 +93,16 @@ class TaskService
     public function getAllTasksDone(User $user): array
     {
         if (in_array("ROLE_ADMIN", $user->getRoles())) {
-            return $this->taskRepository->findBy(["User" => [$user, null, 0], "isDone" => 1]);
+            return $this->taskRepository->findBy(["User" => [$user, null, self::getAnonymousUser()], "isDone" => 1]);
         }
         return $this->taskRepository->findBy(["User" => $user, "isDone" => 1]);
+    }
+
+    /**
+     * @return User|null
+     */
+    private function getAnonymousUser(): ?User
+    {
+        return $this->userRepository->findOneBy(["email" => UserService::ANONYME_USER_EMAIL]);
     }
 }

@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Entity\User;
 use App\Form\TaskType;
-use App\Service\FormService\TaskFormService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,8 +15,7 @@ class TaskController extends AbstractController
 {
 
 
-    public function __construct(private readonly TaskService $taskService,
-                                private readonly TaskFormService $taskFormService
+    public function __construct(private readonly TaskService $taskService
     )
     {
     }
@@ -60,7 +58,7 @@ class TaskController extends AbstractController
 
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->taskFormService->createTask($form, $task, $user);
+            $this->taskService->addTask($task, $user);
             $this->addFlash('success', 'La tâche a été bien été ajoutée.');
             return $this->redirectToRoute('task_list');
         }
@@ -80,7 +78,7 @@ class TaskController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->taskFormService->editTask($task);
+            $this->taskService->editTask($task);
             $this->addFlash('success', 'La tâche a bien été modifiée.');
             return $this->redirectToRoute('task_list');
         }

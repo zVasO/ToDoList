@@ -35,6 +35,7 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/users/create, roles: PUBLIC_ACCESS }
+        - { path: ^/login, roles: 'PUBLIC_ACCESS'}
         - { path: ^/users, roles: ROLE_ADMIN }
         - { path: ^/tasks, roles: ROLE_USER }
 

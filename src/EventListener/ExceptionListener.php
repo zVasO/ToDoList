@@ -23,7 +23,7 @@ class ExceptionListener
     {
     }
 
-    public function onKernelException(ExceptionEvent $event)
+    public function onKernelException(ExceptionEvent $event): void
     {
         $session = $event->getRequest()->getSession();
         // You get the exception object from the received event

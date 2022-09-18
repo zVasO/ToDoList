@@ -7,6 +7,8 @@ use App\Repository\UserRepository;
 
 class UserService
 {
+    public const ANONYME_USER_EMAIL = "anonymous@todolist.fr";
+
 
     public function __construct(private readonly UserRepository $userRepository)
     {

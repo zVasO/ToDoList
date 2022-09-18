@@ -7,7 +7,12 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class TaskType extends \Symfony\Component\Form\AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     * @return void
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('title')

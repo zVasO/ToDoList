@@ -30,7 +30,7 @@ class Task
     #[ORM\Column]
     private ?bool $isDone = null;
 
-    #[ORM\ManyToOne(inversedBy: 'tasks')]
+    #[ORM\ManyToOne(cascade: ["persist"], inversedBy: 'tasks')]
     private ?User $User = null;
 
     public function getId(): ?int
@@ -110,7 +110,7 @@ class Task
 
     public function getUser(): ?User
     {
-        if (null == $this->User) {
+        if (null === $this->User) {
             //We give him user with id 0 which equal to our anonymous user
             $user = new User();
             $user->setId(0);

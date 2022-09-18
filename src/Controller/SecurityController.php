@@ -13,25 +13,26 @@ class SecurityController extends AbstractController
     #[Route('/login', name: 'login')]
     public function index(AuthenticationUtils $authenticationUtils): Response
     {
-        // get the login error if there is one
-        $error = $authenticationUtils->getLastAuthenticationError();
+        if ($this->getUser() === null) {
+            // get the login error if there is one
+            $error = $authenticationUtils->getLastAuthenticationError();
 
-        //last username entered by the user
-        $lastUsername = $authenticationUtils->getLastUsername();
+            //last username entered by the user
+            $lastUsername = $authenticationUtils->getLastUsername();
 
-        return $this->render('security/login.html.twig', [
-           'last_username' => $lastUsername,
-            'error' => $error,
-        ]);
+            return $this->render('security/login.html.twig', [
+                'last_username' => $lastUsername,
+                'error' => $error,
+            ]);
+        }
+        return $this->render('default/index.html.twig');
     }
 
     /**
      * @throws Exception
      */
     #[Route('/logout', name: 'logout', methods: ['GET'])]
-    public function logout()
+    public function logout(): Response
     {
-        // controller can be blank: it will never be called!
-        throw new Exception('Don\'t forget to activate logout in security.yaml');
     }
 }

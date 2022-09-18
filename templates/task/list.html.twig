@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
-
+{% block header_title %}
+<h1 class="text-center">Liste des tâches</h1>
+{% endblock %}
 {% block header_img %}<img class="slide-image" src="{{ asset('img/todolist_content.jpg') }}" alt="todo list">{% endblock %}
 
 {% block body %}
@@ -15,17 +17,17 @@
                         {% if task.isDone %}<span class="glyphicon glyphicon-ok"></span>{% else %}<span class="glyphicon glyphicon-remove"></span>{% endif %}
                     </h4>
                     <h4><a href="{{ path('task_edit', {'id' : task.id }) }}">{{ task.title }}</a></h4>
-                    <p>{{ task.content }}</p>
+                    <p id="content-{{ task.id }}">{{ task.content }}</p>
                 </div>
                 <div class="d-flex gap-3 mb-2">
                     <form action="{{ path('task_toggle', {'id' : task.id }) }}">
-                        <button class="btn btn-success btn-sm pull-right">
+                        <button class="btn btn-success btn-sm pull-right" id="toggle-{{ task.id }}">
                             {% if not task.isDone %}Marquer comme faite{% else %}Marquer non terminée{% endif %}
                         </button>
                     </form>
-                    {% if app.user is not null and app.user is defined and (app.user.id == task.user.id or ('ROLE_ADMIN' in app.user.roles and task.user.id == 0)) %}
+                    {% if app.user is not null and app.user is defined and (app.user.id == task.user.id or ('ROLE_ADMIN' in app.user.roles and (task.user.id == 0 or task.user.email == constant('App\\Service\\UserService::ANONYME_USER_EMAIL')))) %}
                         <form action="{{ path('task_delete', {'id' : task.id }) }}">
-                            <button class="btn btn-danger btn-sm pull-right">Supprimer</button>
+                            <button class="btn btn-danger btn-sm pull-right" id="delete-{{ task.id }}">Supprimer</button>
                         </form>
                     {% endif %}
                 </div>
