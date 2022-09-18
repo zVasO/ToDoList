@@ -40,7 +40,11 @@ class TaskService
         $this->taskRepository->add($task, true);
     }
 
-    public function removeTask(Task $task)
+    /**
+     * @param Task $task
+     * @return void
+     */
+    public function removeTask(Task $task): void
     {
         $this->taskRepository->remove($task, true);
     }

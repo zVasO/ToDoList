@@ -32,7 +32,7 @@ class SecurityController extends AbstractController
      * @throws Exception
      */
     #[Route('/logout', name: 'logout', methods: ['GET'])]
-    public function logout()
+    public function logout(): Response
     {
     }
 }
