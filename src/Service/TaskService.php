@@ -70,6 +70,9 @@ class TaskService
      */
     public function editTask(Task $task): void
     {
+        if ($task->getUser()->getEmail() === null) {
+            $task->setUser($this->userRepository->findOneBy(['email' => "anonymous@todolist.fr"]));
+        }
         $this->taskRepository->add($task, true);
     }
 
