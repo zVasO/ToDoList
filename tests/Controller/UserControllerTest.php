@@ -16,7 +16,7 @@ class UserControllerTest extends WebTestCase
     {
         $this->client = static::createClient();
         $this->client->disableReboot();
-        $this->em = static::getContainer()->get('doctrine')->getManager();
+        $this->userRepository = static::getContainer()->get('doctrine')->getManager()->getRepository(User::class);
         $this->urlGenerator = $this->client->getContainer()->get('router.default');
     }
 
@@ -45,8 +45,8 @@ class UserControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h1', "Se connecter");
         $this->assertTrue($crawler->filter('.alert.alert-success')->count() == 1);
 
-        $user = $this->em->getRepository(User::class)->findOneBy(["email" => "create@user.todo"]);
-        $this->em->getRepository(User::class)->remove($user, true);
+        $user = $this->userRepository->findOneBy(["email" => "create@user.todo"]);
+        $this->userRepository->remove($user, true);
     }
 
     public function testCreateUser()
@@ -68,14 +68,13 @@ class UserControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h1', "Se connecter");
         $this->assertTrue($crawler->filter('.alert.alert-success')->count() == 1);
 
-        $user = $this->em->getRepository(User::class)->findOneBy(["email" => "create@user.todo"]);
-        $this->em->getRepository(User::class)->remove($user, true);
+        $user = $this->userRepository->findOneBy(["email" => "create@user.todo"]);
+        $this->userRepository->remove($user, true);
     }
 
     public function testEditUser()
     {
-        $userRepository = $this->em->getRepository(User::class);
-        $testUser = $userRepository->findOneBy(["email" => "admin@todolist.fr"]);
+        $testUser = $this->userRepository->findOneBy(["email" => "admin@todolist.fr"]);
         $this->client->loginUser($testUser);
         $crawler = $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_edit', ["id" => $testUser->getId()]));
 
@@ -104,8 +103,7 @@ class UserControllerTest extends WebTestCase
 
     public function testShowUsersListWithUser()
     {
-        $userRepository = $this->em->getRepository(User::class);
-        $testUser = $userRepository->getAllNormalUser()[0];
+        $testUser = $this->userRepository->getAllNormalUser()[0];
         $this->client->loginUser($testUser);
 
         $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_list'));
@@ -118,8 +116,7 @@ class UserControllerTest extends WebTestCase
 
     public function testShowUsersListWithAdmin()
     {
-        $userRepository = $this->em->getRepository(User::class);
-        $testUser = $userRepository->getAllAdminUser()[0];
+        $testUser = $this->userRepository->getAllAdminUser()[0];
         $this->client->loginUser($testUser);
 
         $crawler = $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_list'));

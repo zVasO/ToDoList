@@ -72,6 +72,7 @@ class TaskVoterTest extends TestCase
             $this->createUser(2, ["ROLE_ADMIN"], "admin.user@gmail.com"),
             false
         ];
+
         yield 'not a normal User' => [
             TaskVoter::MANAGE_TASK,
             (new Task())->setUser($this->createUser(1, [], UserService::ANONYME_USER_EMAIL)),

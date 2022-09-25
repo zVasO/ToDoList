@@ -90,12 +90,18 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/toggle', name: "task_toggle")]
-    public function toggleTaskAction(Task $task): Response
+    public function toggleTaskAction(Task $task, Request $request): Response
     {
+        $lastRoute = $request->headers->get('referer');
         $this->denyAccessUnlessGranted('MANAGE_TASK', $task);
-
         $this->taskService->toggleTask($task);
         $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+        if (str_contains($lastRoute, 'tasks/done'))
+        {
+            return $this->redirectToRoute('task_list_done');
+        } elseif (str_contains($lastRoute, 'tasks/todo')) {
+            return $this->redirectToRoute('task_list_todo');
+        }
         return $this->redirectToRoute('task_list');
     }
 
