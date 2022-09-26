@@ -23,6 +23,9 @@ If you want to contribute to this projet, please create unit and functionnal tes
 vendor/bin/phpunit --coverage-html public/test-coverage
 ```
 
+## Create your issue
+For create you issue, just use the templates available and make sure to linked a label bug or feat
+
 
 ## Create your branch
 
@@ -33,6 +36,10 @@ For create a branch, just make sure to have one of these prefix
 Then, your commit must be prefixed by the same prefix, and contains a correct description of what you did.
 
 Make sure to follow the Symfony Best Practice accessible [there](https://symfony.com/doc/current/best_practices.html)
+
+## Create a Pull request
+For each branch, you must create a pull request, link the branch related and add a description, after this, please add me to the review.
+
 ## Author
 
 **Dylan Germnn** - Student at OpenClassrooms
